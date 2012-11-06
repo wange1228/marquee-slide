@@ -9,95 +9,30 @@
 (function ($) {
 	var Marquee = function(element, options) {
 		// 继承参数
-		var settings = $.extend({}, $.fn.marquee.defaults, options);
-		
-		// 元素
-		var els = {
+		this.settings = $.extend({}, $.fn.marquee.defaults, options);
+		this.element = element;
+		this.els = {
 			ul: element.children(),
 			li: element.children().children()
 		};
-		
-		// 变量们
-		var vars = {
-			showWidth: settings.showNum * els.li.outerWidth(true),	// 显示宽度
-			groupWidth: settings.stepLen * els.li.outerWidth(true), // 步长宽度
-			allowMarquee: true		// 为防止连续点击操作
-		};
-		
+		this.opts = {
+			toDirection: function() {},
+			showWidth: this.settings.showNum * this.els.li.outerWidth(true),	// 显示宽度
+			groupWidth: this.settings.stepLen * this.els.li.outerWidth(true), // 步长宽度
+			allowMarquee: true
+		}
+
 		// 设置样式
-		var setStyle = function() {
-			element.css({
-				position: 'static' ? 'relative' : element.css('position'),
-				width: vars.showWidth,
-				overflow: 'hidden'
-			});
-			els.ul.css({
-				position: 'relative',
-				width: 9999
-			});
-		};
-		
-		// 获取 id 元素
-		var getElement = function(str) {
-			return (typeof str === 'string' && str !== '') ? $('#' + $.trim(str)) : $();
-		};
-		
-		// 节点变更后，需要刷新元素变量
-		var newEls = function() {
-			els.ul = element.children();
-			els.li = element.children().children();
-			
-			return els;
-		};
-		
-		// 下一页
-		var toNext = function() {
-			if (vars.allowMarquee) {
-				vars.allowMarquee = false;
-				settings.beforeMove.call(this);
-				var sufEls = newEls().li.slice(-settings.stepLen);
-				
-				sufEls.clone().prependTo(els.ul);
-				newEls().ul.css('left', - vars.groupWidth)
-							.animate({
-								left: 0
-							}, settings.speed, function() {
-								sufEls.remove();
-								vars.allowMarquee = true;
-								settings.afterMove.call(this);
-							})
-			}
-		};
-		
-		// 上一页
-		var toPrev = function() {
-			if (vars.allowMarquee) {
-				vars.allowMarquee = false;
-				settings.beforeMove.call(this);
-				var preEls = newEls().li.slice(0, settings.stepLen);
-				
-				preEls.clone().appendTo(els.ul);
-				
-				newEls().ul.animate({
-					left: - vars.groupWidth
-				}, settings.speed, function() {
-					els.ul.css('left', 0);
-					preEls.remove();
-					vars.allowMarquee = true;
-					settings.afterMove.call(this);
-				});
-			}
-		};
-		
-		// 暂停
-		var pause = function() {
-			vars.allowMarquee = false;
-		};
-		
-		// 继续
-		var resume = function() {
-			vars.allowMarquee = true;
-		};
+		this.element.css({
+			position: 'static' ? 'relative' : this.element.css('position'),
+			width: this.opts.showWidth,
+			overflow: 'hidden'
+		});
+		this.els.ul.css({
+			position: 'relative',
+			width: 9999
+		});
+
 		
 		// 事件绑定
 		var eventBind = function() {
@@ -115,42 +50,128 @@
 			});
 		};
 		
-		// 初始化
-		this.init = function() {
-			setStyle();
-			// 如果设置了自动播放
-			if (settings.auto) {
-				var toDirection;
-				switch($.trim(settings.direction.toLowerCase())) {
-					case 'left':
-						toDirection = toPrev;
-					break;
-					
-					case 'right':
-						toDirection = toNext;
-					break;
-					
-					default:
-						toDirection = toPrev;
-					break;
-				}
-				
-				setInterval(function() {
-					toDirection();
-				}, settings.interval);
-			}
-			
-			eventBind();
-		};
 		
 		return this;
+	};
+	
+	// 获取元素
+	Marquee.prototype._getEls = function(str) {
+		return (typeof str === 'string') ? $('#' + $.trim(str)) : $();
+	};
+	
+	// 事件绑定
+	Marquee.prototype._eventBind = function() {
+		var _this = this;
+		_this._getEls(_this.settings.prevBtnId).live('click', function() {
+			_this._toPrev.call(_this);
+		});
+		_this._getEls(_this.settings.nextBtnId).live('click', function() {
+			_this._toNext.call(_this);
+		});
+		_this._getEls(_this.settings.pauseBtnId).live('click', function() {
+			_this._pause.call(_this);
+		});
+		_this._getEls(_this.settings.resumeBtnId).live('click', function() {
+			_this._resume.call(_this);
+		});
+	};
+	
+	Marquee.prototype._newEls = function() {
+		this.els.ul = this.element.children();
+		this.els.li = this.element.children().children();
+		
+		return this.els;
+	};
+	
+	// 下一页
+	Marquee.prototype._toNext = function() {
+		var _this = this;
+			if (this.opts.allowMarquee) {
+				this.opts.allowMarquee = false;
+				this.settings.beforeMove.call(this);
+				var sufEls = this._newEls().li.slice(-this.settings.stepLen);
+				
+				sufEls.clone().prependTo(this.els.ul);
+				this._newEls().ul.css('left', -this.opts.groupWidth)
+							.animate({
+								left: 0
+							}, _this.settings.speed, function() {
+								sufEls.remove();
+								_this.opts.allowMarquee = true;
+								_this.settings.afterMove.call(_this);
+							});
+			}
+	};
+	
+	// 上一页
+	Marquee.prototype._toPrev = function() {
+		var _this = this;
+		if (this.opts.allowMarquee) {
+			this.opts.allowMarquee = false;
+			this.settings.beforeMove.call(this);
+			var preEls = this._newEls().li.slice(0, this.settings.stepLen);
+			
+			preEls.clone().appendTo(this.els.ul);
+			
+			this._newEls().ul.animate({
+				left: - _this.opts.groupWidth
+			}, _this.settings.speed, function() {
+				_this.els.ul.css('left', 0);
+				preEls.remove();
+				_this.opts.allowMarquee = true;
+				_this.settings.afterMove.call(_this);
+			});
+		}
+	};
+	
+	// 继续
+	Marquee.prototype._resume = function() {
+		this.opts.allowMarquee = true;
+	};
+	
+	// 暂停
+	Marquee.prototype._pause = function() {
+		this.opts.allowMarquee = false;
+	};
+	
+	// 初始化
+	Marquee.prototype._init = function() {
+		var _this = this,
+			st = this.settings;
+		
+		if (st.auto) {
+			var formatDirection = $.trim(st.direction.toLowerCase());
+			switch(formatDirection) {
+				case 'left':
+					this.toDirection = this._toPrev;
+				break;
+				
+				case 'right':
+					this.toDirection = this._toNext;
+				break;
+				
+				default:
+					Marquee.newErr(formatDirection + ' is invalid.');
+				break;
+			}
+			
+			setInterval(function() {
+				_this.toDirection();
+			}, st.interval);
+		}
+		
+		this._eventBind();
+	};
+	
+	Marquee.newErr = function(msg) {
+		throw new Error(msg);
 	};
 	
 	$.fn.marquee = function(options) {
 		return this.each(function(key, value) {
 			var marquee = new Marquee($(this), options);
 			
-			marquee.init();
+			marquee._init();
 		});
 	};
 	
