@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<style type="text/css">
+	*{margin:0;padding:0;}
+	.wrap{margin-bottom:10px;}
+	ul{overflow:hidden;clear:both;*zoom:1;}
+	li{list-style:none;width:120px;height:80px;padding:5px;background:#ccc;margin:0 5px;float:left;}
+	</style>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="marquee.js"></script>
+	<title></title>
+</head>
+<body>
+	<div class="wrap" id="wrap1">
+		<ul>
+			<li>1</li>
+			<li>2</li>
+			<li>3</li>
+			<li>4</li>
+			<li>5</li>
+			<li>6</li>
+			<li>7</li>
+			<li>8</li>
+			<li>9</li>
+		</ul>
+	</div>
+	
+	<input type="button" id="prev1" value="上一页" />
+	<input type="button" id="next1" value="下一页" />
+	<input type="button" id="pause1" value="暂停" />
+	<input type="button" id="resume1" value="开始" />
+	
+	<br /><br /><br /><br />
+	<div class="wrap" id="wrap2">
+		<ul>
+			<li>1</li>
+			<li>2</li>
+			<li>3</li>
+			<li>4</li>
+			<li>5</li>
+			<li>6</li>
+			<li>7</li>
+			<li>8</li>
+			<li>9</li>
+		</ul>
+	</div>
+
+	<input type="button" id="prev2" value="上一页" />
+	<input type="button" id="next2" value="下一页" />
+	<input type="button" id="pause2" value="暂停" />
+	<input type="button" id="resume2" value="开始" />
+	
+	<script type="text/javascript">
+		$(function() {
+			$('#wrap1').marquee({
+				auto: true,					// 自动滚动
+				interval: 3000,				// 间隔时间
+				speed: 500,					// 移动速度
+				prevBtnId: 'prev1',			// 向前滚 id
+				nextBtnId: 'next1',			// 向后滚 id
+				pauseBtnId: 'pause1',		// 暂停按钮 id
+				resumeBtnId: 'resume1',		// 继续按钮 id
+				showNum: 3,					// 显示个数
+				stepLen: 2,					// 每次滚动步长
+				direction: 'left',			// 移动方向
+				afterMove: function() {},	// 每次移动后回调
+				beforeMove: function() {}	// 每次移动前回调
+			});
+		})
+	</script>
+</body>
+</html>
