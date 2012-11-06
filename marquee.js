@@ -1,153 +1,204 @@
 /**
  * @param description 基于 jQuery 的无缝滚动插件
  * @author WanGe
- * @version 0.1
- * @update 2012-11-05
- * @log 0.1.2 即将更新 1.参数格式校验 2.开放暂停、继续等方法 
+ * @version 0.1.1
+ * @update 2012-11-06
 **/
 
 (function ($) {
 	var Marquee = function(element, options) {
+		var _this = this;
 		// 继承参数
-		this.settings = $.extend({}, $.fn.marquee.defaults, options);
-		this.element = element;
-		this.els = {
-			ul: element.children(),
-			li: element.children().children()
-		};
-		this.opts = {
-			toDirection: function() {},
-			showWidth: this.settings.showNum * this.els.li.outerWidth(true),	// 显示宽度
-			groupWidth: this.settings.stepLen * this.els.li.outerWidth(true), // 步长宽度
-			allowMarquee: true
-		}
+		_this.settings = $.extend({}, $.fn.marquee.defaults, options);
+		
+		var els = {
+				wrap: element,
+				ul: element.children(),
+				li: element.children().children()
+			},
+			liOuterWidth = els.li.outerWidth(true),		// 单个元素宽度
+			showWidth = _this.settings.showNum * liOuterWidth,	// 显示宽度
+			curPosStyle = els.wrap.css('position'),		// 当前 position 的值
+			opts = {
+				groupWidth: _this.settings.stepLen * liOuterWidth, // 步长宽度
+				allowMarquee: true
+			};
 
 		// 设置样式
-		this.element.css({
-			position: 'static' ? 'relative' : this.element.css('position'),
-			width: this.opts.showWidth,
+		element.css({
+			position: 'static' ? 'relative' : curPosStyle,
+			width: showWidth,
 			overflow: 'hidden'
 		});
-		this.els.ul.css({
+		els.ul.css({
 			position: 'relative',
 			width: 9999
 		});
-
 		
-		// 事件绑定
-		var eventBind = function() {
-			getElement(settings.prevBtnId).live('click', function() {
-				toPrev.call(this);
-			});
-			getElement(settings.nextBtnId).live('click', function() {
-				toNext.call(this);
-			});
-			getElement(settings.pauseBtnId).live('click', function() {
-				pause.call(this);
-			});
-			getElement(settings.resumeBtnId).live('click', function() {
-				resume.call(this);
-			});
+		// 特权方法 获取元素
+		_this._getEls = function() {
+			return els;
+		};
+		// 特权方法 设置元素
+		_this._setEls = function(prop, value) {
+			els[prop] = value;
+		};
+		// 特权方法 获取设置
+		_this._getOpts = function() {
+			return opts;
+		};
+		// 特权方法 获取设置
+		_this._setOpts = function(prop, value) {
+			opts[prop] = value;
 		};
 		
+		return _this;
+	};
+	
+	// 校验参数
+	Marquee.prototype._checkParams = function() {
+		var _this = this,
+			st = _this.settings,
+			liLen = _this._getEls().li.length,
+			errMsg = '';
 		
-		return this;
+		if (typeof st.auto !== 'boolean') {
+			errMsg = 'auto';
+		} else if (typeof st.interval !== 'number') {
+			errMsg = 'interval';
+		} else if (typeof st.speed !== 'number') {
+			errMsg = 'speed';
+		} else if (typeof st.prevBtnId !== 'string') {
+			errMsg = 'prevBtnId';
+		} else if (typeof st.nextBtnId !== 'string') {
+			errMsg = 'nextBtnId';
+		} else if (typeof st.pauseBtnId !== 'string') {
+			errMsg = 'pauseBtnId';
+		} else if (typeof st.resumeBtnId !== 'string') {
+			errMsg = 'resumeBtnId';
+		} else if (typeof st.showNum !== 'number' || st.showNum > liLen) {
+			errMsg = 'showNum';
+		} else if (typeof st.stepLen !== 'number' || st.stepLen > liLen) {
+			errMsg = 'stepLen';
+		} else if (typeof st.direction !== 'string') {
+			errMsg = 'direction';
+		} else if (typeof st.direction !== 'string') {
+			errMsg = 'direction';
+		} else if (!$.isFunction(st.afterMove)) {
+			errMsg = 'afterMove';
+		} else if (!$.isFunction(st.beforeMove)) {
+			errMsg = 'beforeMove';
+		}
+		
+		if (errMsg !== '') {
+			Marquee.newErr(errMsg + ' is invalid.');
+		}
 	};
 	
 	// 获取元素
-	Marquee.prototype._getEls = function(str) {
-		return (typeof str === 'string') ? $('#' + $.trim(str)) : $();
+	Marquee.prototype._getBtnEl = function(str) {
+		return (typeof str === 'string' && str !== '') ? $('#' + $.trim(str)) : false;
 	};
 	
 	// 事件绑定
 	Marquee.prototype._eventBind = function() {
-		var _this = this;
-		_this._getEls(_this.settings.prevBtnId).live('click', function() {
-			_this._toPrev.call(_this);
-		});
-		_this._getEls(_this.settings.nextBtnId).live('click', function() {
-			_this._toNext.call(_this);
-		});
-		_this._getEls(_this.settings.pauseBtnId).live('click', function() {
-			_this._pause.call(_this);
-		});
-		_this._getEls(_this.settings.resumeBtnId).live('click', function() {
-			_this._resume.call(_this);
-		});
+		var _this = this,
+			st = _this.settings;
+
+		var eventObj = {
+			prevBtnId: _this._toPrev,
+			nextBtnId: _this._toNext,
+			pauseBtnId: _this._pause,
+			resumeBtnId: _this._resume
+		};
+		
+		for (var i in eventObj) {
+			(function(i) {
+				var el = _this._getBtnEl(_this.settings[i]);
+				if (el) {
+					el.live('click', function() {
+						eventObj[i].call(_this, st.stepLen, st.speed, st.beforeMove, st.afterMove);
+					});
+				}
+			})(i)
+		}
 	};
 	
-	Marquee.prototype._newEls = function() {
-		this.els.ul = this.element.children();
-		this.els.li = this.element.children().children();
+	// 刷新元素
+	Marquee.prototype._refreshEls = function() {
+		var _this = this;
+		_this._setEls('ul', _this._getEls().wrap.children());
+		_this._setEls('li', _this._getEls().wrap.children().children());
 		
-		return this.els;
+		return _this._getEls();
 	};
 	
 	// 下一页
-	Marquee.prototype._toNext = function() {
+	Marquee.prototype._toNext = function(stepLen, speed, beforeMove, afterMove) {
 		var _this = this;
-			if (this.opts.allowMarquee) {
-				this.opts.allowMarquee = false;
-				this.settings.beforeMove.call(this);
-				var sufEls = this._newEls().li.slice(-this.settings.stepLen);
-				
-				sufEls.clone().prependTo(this.els.ul);
-				this._newEls().ul.css('left', -this.opts.groupWidth)
-							.animate({
-								left: 0
-							}, _this.settings.speed, function() {
-								sufEls.remove();
-								_this.opts.allowMarquee = true;
-								_this.settings.afterMove.call(_this);
-							});
-			}
+		if (_this._getOpts().allowMarquee) {
+			_this._setOpts('allowMarquee', false);
+			beforeMove.call(_this);
+			var sufEls = _this._refreshEls().li.slice(-stepLen);
+			
+			sufEls.clone().prependTo(_this._getEls().ul);
+			_this._refreshEls().ul.css('left', -_this._getOpts().groupWidth)
+						.animate({
+							left: 0
+						}, speed, function() {
+							sufEls.remove();
+							_this._setOpts('allowMarquee', true);
+							afterMove.call(_this);
+						});
+		}
 	};
 	
 	// 上一页
-	Marquee.prototype._toPrev = function() {
+	Marquee.prototype._toPrev = function(stepLen, speed, beforeMove, afterMove) {
 		var _this = this;
-		if (this.opts.allowMarquee) {
-			this.opts.allowMarquee = false;
-			this.settings.beforeMove.call(this);
-			var preEls = this._newEls().li.slice(0, this.settings.stepLen);
+		if (_this._getOpts().allowMarquee) {
+			_this._setOpts('allowMarquee', false);
+			beforeMove.call(_this);
+			var preEls = _this._refreshEls().li.slice(0, stepLen);
 			
-			preEls.clone().appendTo(this.els.ul);
+			preEls.clone().appendTo(_this._getEls().ul);
 			
-			this._newEls().ul.animate({
-				left: - _this.opts.groupWidth
-			}, _this.settings.speed, function() {
-				_this.els.ul.css('left', 0);
+			_this._refreshEls().ul.animate({
+				left: - _this._getOpts().groupWidth
+			}, speed, function() {
+				_this._getEls().ul.css('left', 0);
 				preEls.remove();
-				_this.opts.allowMarquee = true;
-				_this.settings.afterMove.call(_this);
+				_this._setOpts('allowMarquee', true);
+				afterMove.call(_this);
 			});
 		}
 	};
 	
 	// 继续
 	Marquee.prototype._resume = function() {
-		this.opts.allowMarquee = true;
+		this._setOpts('allowMarquee', true);
 	};
 	
 	// 暂停
 	Marquee.prototype._pause = function() {
-		this.opts.allowMarquee = false;
+		this._setOpts('allowMarquee', false);
 	};
 	
 	// 初始化
 	Marquee.prototype._init = function() {
 		var _this = this,
-			st = this.settings;
-		
+			st = _this.settings;
+		console.log(_this)
+		_this._checkParams();
 		if (st.auto) {
 			var formatDirection = $.trim(st.direction.toLowerCase());
 			switch(formatDirection) {
 				case 'left':
-					this.toDirection = this._toPrev;
+					_this._move = _this._toPrev;
 				break;
 				
 				case 'right':
-					this.toDirection = this._toNext;
+					_this._move = _this._toNext;
 				break;
 				
 				default:
@@ -156,13 +207,14 @@
 			}
 			
 			setInterval(function() {
-				_this.toDirection();
+				_this._move(st.stepLen, st.speed, st.beforeMove, st.afterMove);
 			}, st.interval);
 		}
 		
-		this._eventBind();
+		_this._eventBind();
 	};
 	
+	// 错误提示
 	Marquee.newErr = function(msg) {
 		throw new Error(msg);
 	};
