@@ -1,38 +1,74 @@
 /**
  * @param description 基于 jQuery 的无缝滚动插件
  * @author WanGe
- * @version 0.1.1
+ * @version 0.2
  * @update 2012-11-06
 **/
 
 (function ($) {
 	var Marquee = function(element, options) {
-		var _this = this;
+		var _this = this,
+			defaultOptions = $.fn.marquee.defaults;
 		// 继承参数
-		_this.settings = $.extend({}, $.fn.marquee.defaults, options);
-		
+		_this.settings = $.extend({}, defaultOptions, options);
 		var els = {
 				wrap: element,
 				ul: element.children(),
 				li: element.children().children()
 			},
+			marqueeType = _this.settings.type,
 			liOuterWidth = els.li.outerWidth(true),		// 单个元素宽度
-			showWidth = _this.settings.showNum * liOuterWidth,	// 显示宽度
+			liOuterHeight = els.li.outerHeight(true),		// 单个元素高度
+			wrapWidth = wrapHeight = ulWidth = ulHeight = 0,
+			floatStyle = 'none',
 			curPosStyle = els.wrap.css('position'),		// 当前 position 的值
 			opts = {
-				groupWidth: _this.settings.stepLen * liOuterWidth, // 步长宽度
+				lt: '',
+				groupSize: 0, // 步长宽度
 				allowMarquee: true
 			};
+		switch (marqueeType) {
+			// 如果是水平的
+			case 'horizontal':
+				wrapWidth = _this.settings.showNum * liOuterWidth;
+				wrapHeight = ulHeight = 'auto';
+				ulWidth = 9999;
+				floatStyle = 'left';
+				
+				opts.groupSize = _this.settings.stepLen * liOuterWidth;
+				opts.lt = 'left';
+			break;
+			
+			// 如果是垂直的
+			case 'vertical':
+				wrapWidth = ulWidth = 'auto';
+				wrapHeight = _this.settings.showNum * liOuterHeight;
+				ulHeight = 9999;
+				floatStyle = 'none';
+				
+				opts.groupSize = _this.settings.stepLen * liOuterHeight;
+				opts.lt = 'top';
+			break;
+			
+			default:
+				Marquee.newErr('type: ' + marqueeType + ' is an invalid value.');
+			break;
+		}
 
 		// 设置样式
 		element.css({
 			position: 'static' ? 'relative' : curPosStyle,
-			width: showWidth,
+			width: wrapWidth,
+			height: wrapHeight,
 			overflow: 'hidden'
 		});
 		els.ul.css({
 			position: 'relative',
-			width: 9999
+			width: ulWidth,
+			height: ulHeight
+		});
+		els.li.css({
+			float: floatStyle
 		});
 		
 		// 特权方法 获取元素
@@ -51,7 +87,10 @@
 		_this._setOpts = function(prop, value) {
 			opts[prop] = value;
 		};
-		
+		// 特权方法 获取默认参数
+		_this.getDefaultOpts = function() {
+			return defaultOptions;
+		};
 		return _this;
 	};
 	
@@ -60,38 +99,19 @@
 		var _this = this,
 			st = _this.settings,
 			liLen = _this._getEls().li.length,
-			errMsg = '';
+			options = _this.getDefaultOpts();
 		
-		if (typeof st.auto !== 'boolean') {
-			errMsg = 'auto';
-		} else if (typeof st.interval !== 'number') {
-			errMsg = 'interval';
-		} else if (typeof st.speed !== 'number') {
-			errMsg = 'speed';
-		} else if (typeof st.prevBtnId !== 'string') {
-			errMsg = 'prevBtnId';
-		} else if (typeof st.nextBtnId !== 'string') {
-			errMsg = 'nextBtnId';
-		} else if (typeof st.pauseBtnId !== 'string') {
-			errMsg = 'pauseBtnId';
-		} else if (typeof st.resumeBtnId !== 'string') {
-			errMsg = 'resumeBtnId';
-		} else if (typeof st.showNum !== 'number' || st.showNum > liLen) {
-			errMsg = 'showNum';
-		} else if (typeof st.stepLen !== 'number' || st.stepLen > liLen) {
-			errMsg = 'stepLen';
-		} else if (typeof st.direction !== 'string') {
-			errMsg = 'direction';
-		} else if (typeof st.direction !== 'string') {
-			errMsg = 'direction';
-		} else if (!$.isFunction(st.afterMove)) {
-			errMsg = 'afterMove';
-		} else if (!$.isFunction(st.beforeMove)) {
-			errMsg = 'beforeMove';
+		for (var i in options) {
+			if (typeof options[i] !== typeof st[i]) {
+				Marquee.newErr(i + ': ' + st[i] + ' is an invalid value.');
+			}
 		}
 		
-		if (errMsg !== '') {
-			Marquee.newErr(errMsg + ' is invalid.');
+		if (st.showNum > liLen) {
+			Marquee.newErr('showNum: ' + st.showNum + ' is an invalid value.');
+		}
+		if (st.stepLen > liLen) {
+			Marquee.newErr('stepLen: ' + st.stepLen + ' is an invalid value.');
 		}
 	};
 	
@@ -135,38 +155,47 @@
 	
 	// 下一页
 	Marquee.prototype._toNext = function(stepLen, speed, beforeMove, afterMove) {
-		var _this = this;
+		var _this = this,
+			type = _this.settings.type,
+			animateObj = {};
 		if (_this._getOpts().allowMarquee) {
 			_this._setOpts('allowMarquee', false);
 			beforeMove.call(_this);
 			var sufEls = _this._refreshEls().li.slice(-stepLen);
 			
 			sufEls.clone().prependTo(_this._getEls().ul);
-			_this._refreshEls().ul.css('left', -_this._getOpts().groupWidth)
-						.animate({
-							left: 0
-						}, speed, function() {
-							sufEls.remove();
-							_this._setOpts('allowMarquee', true);
-							afterMove.call(_this);
-						});
+			if (type === 'horizontal') {
+				animateObj = {left: 0};
+			} else if (type === 'vertical') {
+				animateObj = {top: 0};
+			}
+			
+			_this._refreshEls().ul.css(_this._getOpts().lt, -_this._getOpts().groupSize).animate(animateObj, speed, function() {
+				sufEls.remove();
+				_this._setOpts('allowMarquee', true);
+				afterMove.call(_this);
+			});
 		}
 	};
 	
 	// 上一页
 	Marquee.prototype._toPrev = function(stepLen, speed, beforeMove, afterMove) {
-		var _this = this;
+		var _this = this,
+			type = _this.settings.type,
+			animateObj = {};
 		if (_this._getOpts().allowMarquee) {
 			_this._setOpts('allowMarquee', false);
 			beforeMove.call(_this);
 			var preEls = _this._refreshEls().li.slice(0, stepLen);
 			
 			preEls.clone().appendTo(_this._getEls().ul);
-			
-			_this._refreshEls().ul.animate({
-				left: - _this._getOpts().groupWidth
-			}, speed, function() {
-				_this._getEls().ul.css('left', 0);
+			if (type === 'horizontal') {
+				animateObj = {left: - _this._getOpts().groupSize};
+			} else if (type === 'vertical') {
+				animateObj = {top: - _this._getOpts().groupSize};
+			}
+			_this._refreshEls().ul.animate(animateObj, speed, function() {
+				_this._getEls().ul.css(_this._getOpts().lt, 0);
 				preEls.remove();
 				_this._setOpts('allowMarquee', true);
 				afterMove.call(_this);
@@ -188,11 +217,9 @@
 	Marquee.prototype._init = function() {
 		var _this = this,
 			st = _this.settings;
-		console.log(_this)
 		_this._checkParams();
 		if (st.auto) {
-			var formatDirection = $.trim(st.direction.toLowerCase());
-			switch(formatDirection) {
+			switch(st.direction) {
 				case 'left':
 					_this._move = _this._toPrev;
 				break;
@@ -202,7 +229,7 @@
 				break;
 				
 				default:
-					Marquee.newErr(formatDirection + ' is invalid.');
+					Marquee.newErr('direction: ' + st.direction + ' is an invalid value.');
 				break;
 			}
 			
@@ -239,6 +266,7 @@
 		showNum: 5,					// 显示个数
 		stepLen: 5,					// 每次滚动步长
 		direction: 'left',			// 移动方向
+		type: 'horizontal',			// horizontal / vertical
 		afterMove: function() {},	// 每次移动后回调
 		beforeMove: function() {}	// 每次移动前回调
 	};
