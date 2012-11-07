@@ -1,5 +1,5 @@
 /**
- * @param description 基于 jQuery 的无缝滚动插件
+ * @description 基于 jQuery 的无缝滚动插件
  * @author WanGe
  * @version 0.2
  * @update 2012-11-06
@@ -19,6 +19,7 @@
 			marqueeType = _this.settings.type,
 			liOuterWidth = els.li.outerWidth(true),		// 单个元素宽度
 			liOuterHeight = els.li.outerHeight(true),		// 单个元素高度
+			liMarginMax = Math.max(parseInt(els.li.css('margin-top'), 10), parseInt(els.li.css('margin-bottom'), 10)),
 			wrapWidth = wrapHeight = ulWidth = ulHeight = 0,
 			floatStyle = 'none',
 			curPosStyle = els.wrap.css('position'),		// 当前 position 的值
@@ -42,11 +43,11 @@
 			// 如果是垂直的
 			case 'vertical':
 				wrapWidth = ulWidth = 'auto';
-				wrapHeight = _this.settings.showNum * liOuterHeight;
+				wrapHeight = _this.settings.showNum * liOuterHeight - liMarginMax;
 				ulHeight = 9999;
 				floatStyle = 'none';
 				
-				opts.groupSize = _this.settings.stepLen * liOuterHeight;
+				opts.groupSize = _this.settings.stepLen * liOuterHeight - liMarginMax;
 				opts.lt = 'top';
 			break;
 			
@@ -107,10 +108,10 @@
 			}
 		}
 		
-		if (st.showNum > liLen) {
+		if (st.showNum > liLen || st.showNum <= 0) {
 			Marquee.newErr('showNum: ' + st.showNum + ' is an invalid value.');
 		}
-		if (st.stepLen > liLen) {
+		if (st.stepLen > liLen || st.stepLen <= 0) {
 			Marquee.newErr('stepLen: ' + st.stepLen + ' is an invalid value.');
 		}
 	};
@@ -220,11 +221,11 @@
 		_this._checkParams();
 		if (st.auto) {
 			switch(st.direction) {
-				case 'left':
+				case 'forward':
 					_this._move = _this._toPrev;
 				break;
 				
-				case 'right':
+				case 'backward':
 					_this._move = _this._toNext;
 				break;
 				
@@ -263,10 +264,10 @@
 		nextBtnId: '',				// 向后滚 id
 		pauseBtnId: '',				// 暂停按钮 id
 		resumeBtnId: '',			// 继续按钮 id
-		showNum: 5,					// 显示个数
-		stepLen: 5,					// 每次滚动步长
-		direction: 'left',			// 移动方向
-		type: 'horizontal',			// horizontal / vertical
+		showNum: 1,					// 显示个数
+		stepLen: 1,					// 每次滚动步长
+		direction: 'forward',		// 移动方向 forward / backward
+		type: 'horizontal',			// 水平滚动：horizontal / 垂直滚动：vertical
 		afterMove: function() {},	// 每次移动后回调
 		beforeMove: function() {}	// 每次移动前回调
 	};

@@ -1,149 +1,439 @@
 <!DOCTYPE HTML>
-<html lang="en-US">
+<html lang="zh-CN">
 <head>
-	<meta charset="UTF-8">
-	<style type="text/css">
-	*{margin:0;padding:0;}
-	.wrap,.box{margin-bottom:10px;}
-	ul,.ul{overflow:hidden;clear:both;*zoom:1;}
-	li,.li{list-style:none;width:120px;height:80px;padding:5px;background:#ccc;margin:0 5px;}
-	</style>
+	<meta charset="UTF-8" />
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 	<script type="text/javascript" src="marquee.js"></script>
-	<title></title>
+	<script type="text/javascript">
+	$(function() {
+		if($.browser.msie) {
+			alert('拒绝 IE，从前端开始，请使用 Firefox / Chrome 等标准浏览器'); 
+		} else {
+			$('.mod').each(function() {
+				var _this = $(this),
+					code = $.trim($('.demo', _this).html()).replace(/textarea>/, 'textare>');
+				$('.code', _this).prepend($('<textarea>' + code + '</textarea>'));
+			});
+		}
+		
+		$('.mod_ft').each(function() {
+			$('<div class="to_top"><a href="#mod_header" title="返回顶部">返回顶部</a></div>').appendTo($(this));
+		});
+		
+		
+		$('a[href*=#]').click(function () {
+			if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+				var $target = $(this.hash);
+				$target = $target.length && $target || $('[name=' + this.hash.slice(1) + ']');
+				if ($target.length) {
+					var targetOffset = $target.offset().top;
+					$('html,body').animate({
+						scrollTop : targetOffset
+					}, 1000);
+					return false;
+				}
+			}
+		});
+
+	})
+	</script>
+	<style type="text/css">
+		* {margin:0;padding:0;}
+		body{font:12px/1.4 SimSun,Arial,Helvetica,sans-serif;color:#333;}
+		strong{font-weight:700;}
+		:focus{outline:0;}
+		#mod_header,#mod_main,#mod_footer{width:1000px;margin:0 auto 20px;}
+		#mod_footer{margin:0 auto;padding-bottom:20px;}
+		#mod_header h1{font:700 22px/2 'Microsoft YaHei';text-align:center;}
+		#desc li{list-style:square inside none;}
+		.mod{border-bottom:5px dashed #f00;margin-bottom:10px;padding-bottom:10px;}
+		.mod_hd{}
+		.mod_hd h2{margin-bottom:10px;padding:0 20px;font:700 16px/2 'Microsoft YaHei',SimSun;color:#fff;background:#104778;text-shadow:1px 1px 1px #8DB2E3;}
+		.mod_bd{}
+		.mod_ft strong{display:block;margin-bottom:5px;}
+		.mod_ft ul{margin-bottom:10px;}
+		.mod_ft li{list-style:disc inside none;line-height:20px;}
+		.demo,.code{margin-bottom:10px;}
+		.code textarea{margin:0;border:0 none;padding:0;width:100%;height:150px;font:12px/1.4 'Lucida Console',Arial;background:#ddd;resize:none;}
+		.to_top{text-align:right;}
+		.to_top a{text-decoration:none;}
+		#mod_footer{text-align:center;}
+		
+		.wrap,.box{margin-bottom:10px;}
+		.wrap ul,.wrap .ul{overflow:hidden;clear:both;*zoom:1;}
+		.wrap li,.wrap .li{list-style:none;width:120px;height:80px;padding:5px;background:#ccc;margin:2px 5px 10px 5px;font:700 30px/80px Arial;text-align:center;}
+	</style>
+	
+	<title>基于 jQuery 的无缝滚动插件</title>
 </head>
 <body>
-	<div class="box">
-		<div class="wrap" id="wrap1">
-			<ul>
-				<li>1</li>
-				<li>2</li>
-				<li>3</li>
-				<li>4</li>
-				<li>5</li>
-				<li>6</li>
-				<li>7</li>
-				<li>8</li>
-				<li>9</li>
-			</ul>
+	<!-- S Header -->
+	<div id="mod_header">
+		<h1>基于 jQuery 的无缝滚动插件</h1>
+		<div id="desc">
+			<p></p>
 		</div>
-		
-		<input type="button" id="prev1" value="上一页" />
-		<input type="button" id="next1" value="下一页" />
-		<input type="button" id="pause1" value="暂停" />
-		<input type="button" id="resume1" value="开始" />
-		
-		
-		<script type="text/javascript">
-			$(function() {
-				$('#wrap1').marquee({
-					auto: true,					// 自动滚动
-					interval: 3000,				// 间隔时间
-					speed: 500,					// 移动速度
-					prevBtnId: 'prev1',			// 向前滚 id
-					nextBtnId: 'next1',			// 向后滚 id
-					pauseBtnId: 'pause1',		// 暂停按钮 id
-					resumeBtnId: 'resume1',		// 继续按钮 id
-					showNum: 5,					// 显示个数
-					stepLen: 5,					// 每次滚动步长
-					direction: 'left',			// 移动方向
-					afterMove: function() {},	// 每次移动后回调
-					beforeMove: function() {}	// 每次移动前回调
-				});
-			})
-		</script>
 	</div>
+	<!-- E Header -->
 	
-	<div class="box">
-		<div class="wrap" id="wrap2">
-			<div class="ul">
-				<div class="li">1</div>
-				<div class="li">2</div>
-				<div class="li">3</div>
-				<div class="li">4</div>
-				<div class="li">5</div>
-				<div class="li">6</div>
-				<div class="li">7</div>
-				<div class="li">8</div>
-				<div class="li">9</div>
+	<!-- S Main -->
+	<div id="mod_main">
+		<!-- S module A -->
+		<div id="module_a" class="mod">
+			<div class="mod_hd">
+				<h2>用例一：不带任何参数（默认参数）</h2>
 			</div>
+			<div class="mod_bd">
+				<div class="demo">
+<div id="wrap1" class="wrap">
+	<ul>
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+		<li>9</li>
+	</ul>
+</div>
+<script type="text/javascript">
+	$(function() {
+		$('#wrap1').marquee();
+	})
+</script>
+				</div>
+				<div class="code"></div>
+			</div>
+			<div class="mod_ft"></div>
 		</div>
+		<!-- E module A -->
 		
-		
-		<input type="button" id="prev2" value="上一页" />
-		<input type="button" id="next2" value="下一页" />
-		
-		
-		<script type="text/javascript">
-			$(function() {
-				$('#wrap2').marquee({
-					auto: false,				// 自动滚动
-					speed: 1000,				// 移动速度
-					prevBtnId: 'prev2',			// 向前滚 id
-					nextBtnId: 'next2',			// 向后滚 id
-					showNum: 5,					// 显示个数
-					stepLen: 2,					// 每次滚动步长
-					direction: 'right',			// 移动方向
-					afterMove: function() {alert('after move')},	// 每次移动后回调
-					beforeMove: function() {alert('before move')}	// 每次移动前回调
-				});
-			})
-		</script>
+		<!-- S module B -->
+		<div id="module_b" class="mod">
+			<div class="mod_hd">
+				<h2>用例二：DOM 结构不用 ul&gt;li</h2>
+			</div>
+			<div class="mod_bd">
+				<div class="demo">
+<div id="wrap2" class="wrap">
+	<div class="ul">
+		<div class="li">1</div>
+		<div class="li">2</div>
+		<div class="li">3</div>
+		<div class="li">4</div>
+		<div class="li">5</div>
+		<div class="li">6</div>
+		<div class="li">7</div>
+		<div class="li">8</div>
+		<div class="li">9</div>
 	</div>
+</div>
+<script type="text/javascript">
+	$(function() {
+		$('#wrap2').marquee();
+	})
+</script>
+				</div>
+				<div class="code"></div>
+			</div>
+			<div class="mod_ft"></div>
+		</div>
+		<!-- E module B -->
+		
+		<!-- S module C -->
+		<div id="module_c" class="mod">
+			<div class="mod_hd">
+				<h2>用例三：自动滚动</h2>
+			</div>
+			<div class="mod_bd">
+				<div class="demo">
+<div id="wrap3" class="wrap">
+	<ul>
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+		<li>9</li>
+	</ul>
+</div>
+<script type="text/javascript">
+	$(function() {
+		$('#wrap3').marquee({
+			auto: true,					// 自动滚动
+			interval: 3000,				// 间隔时间
+			speed: 500,					// 移动速度
+			showNum: 5,					// 显示个数
+			stepLen: 5					// 每次滚动步长
+		});
+	})
+</script>
+				</div>
+				<div class="code"></div>
+			</div>
+			<div class="mod_ft"></div>
+		</div>
+		<!-- E module C -->
+		
+		<!-- S module D -->
+		<div id="module_d" class="mod">
+			<div class="mod_hd">
+				<h2>用例四：手动滚动</h2>
+			</div>
+			<div class="mod_bd">
+				<div class="demo">
+<div id="wrap4" class="wrap">
+	<ul>
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+		<li>9</li>
+	</ul>
+</div>
+<input type="button" value="上一组" id="prev4" />
+<input type="button" value="下一组" id="next4" />
+<script type="text/javascript">
+	$(function() {
+		$('#wrap4').marquee({
+			auto: false,				// 自动滚动
+			speed: 1000,					// 移动速度
+			prevBtnId: 'prev4',			// 向前滚 id
+			nextBtnId: 'next4',			// 向后滚 id
+			showNum: 4,					// 显示个数
+			stepLen: 4					// 每次滚动步长
+		});
+	})
+</script>
+				</div>
+				<div class="code"></div>
+			</div>
+			<div class="mod_ft"></div>
+		</div>
+		<!-- E module D -->
+		
+		<!-- S module E -->
+		<div id="module_e" class="mod">
+			<div class="mod_hd">
+				<h2>用例五：暂停/继续滚动</h2>
+			</div>
+			<div class="mod_bd">
+				<div class="demo">
+<div id="wrap5" class="wrap">
+	<ul>
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+		<li>9</li>
+	</ul>
+</div>
+<input type="button" value="暂停" id="pause5" />
+<input type="button" value="继续" id="resume5" />
+<script type="text/javascript">
+	$(function() {
+		$('#wrap5').marquee({
+			auto: true,					// 自动滚动
+			interval: 1000,				// 间隔时间
+			pauseBtnId: 'pause5',		// 暂停按钮 id
+			resumeBtnId: 'resume5',		// 继续按钮 id
+			showNum: 4,					// 显示个数
+			stepLen: 4					// 每次滚动步长
+		});
+	})
+</script>
+				</div>
+				<div class="code"></div>
+			</div>
+			<div class="mod_ft"></div>
+		</div>
+		<!-- E module E -->
+		
+		<!-- S module F -->
+		<div id="module_f" class="mod">
+			<div class="mod_hd">
+				<h2>用例六：向右滚动</h2>
+			</div>
+			<div class="mod_bd">
+				<div class="demo">
+<div id="wrap6" class="wrap">
+	<ul>
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+		<li>9</li>
+	</ul>
+</div>
+<script type="text/javascript">
+	$(function() {
+		$('#wrap6').marquee({
+			auto: true,					// 自动滚动
+			interval: 2000,				// 间隔时间
+			speed: 800,					// 移动速度
+			showNum: 6,					// 显示个数
+			stepLen: 6,					// 每次滚动步长
+			direction: 'backward'			// 移动方向
+		});
+	})
+</script>
+				</div>
+				<div class="code"></div>
+			</div>
+			<div class="mod_ft"></div>
+		</div>
+		<!-- E module F -->
+		
+		<!-- S module G -->
+		<div id="module_g" class="mod">
+			<div class="mod_hd">
+				<h2>用例七：垂直滚动</h2>
+			</div>
+			<div class="mod_bd">
+				<div class="demo">
+<div id="wrap7" class="wrap">
+	<ul>
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+		<li>9</li>
+	</ul>
+</div>
+<script type="text/javascript">
+	$(function() {
+		$('#wrap7').marquee({
+			auto: true,					// 自动滚动
+			interval: 2000,				// 间隔时间
+			showNum: 3,					// 显示个数
+			stepLen: 3,					// 每次滚动步长
+			type: 'vertical'			// 水平滚动：horizontal / 垂直滚动：vertical
+		});
+	})
+</script>
+				</div>
+				<div class="code"></div>
+			</div>
+			<div class="mod_ft"></div>
+		</div>
+		<!-- E module G -->
+		
+		<!-- S module H -->
+		<div id="module_h" class="mod">
+			<div class="mod_hd">
+				<h2>用例八：显示个数 !== 每次步长</h2>
+			</div>
+			<div class="mod_bd">
+				<div class="demo">
+<div id="wrap8" class="wrap">
+	<ul>
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+		<li>9</li>
+	</ul>
+</div>
+<input type="button" value="上一组" id="prev8" />
+<input type="button" value="下一组" id="next8" />
+<script type="text/javascript">
+	$(function() {
+		$('#wrap8').marquee({
+			auto: false,				// 自动滚动
+			prevBtnId: 'prev8',			// 向前滚 id
+			nextBtnId: 'next8',			// 向后滚 id
+			showNum: 4,					// 显示个数
+			stepLen: 3,					// 每次滚动步长
+			type: 'vertical'			// 水平滚动：horizontal / 垂直滚动：vertical
+		});
+	})
+</script>
+				</div>
+				<div class="code"></div>
+			</div>
+			<div class="mod_ft"></div>
+		</div>
+		<!-- E module H -->
+		
+		<!-- S module I -->
+		<div id="module_i" class="mod">
+			<div class="mod_hd">
+				<h2>用例九：支持回调</h2>
+			</div>
+			<div class="mod_bd">
+				<div class="demo">
+<div id="wrap9" class="wrap">
+	<ul>
+		<li>1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+		<li>6</li>
+		<li>7</li>
+		<li>8</li>
+		<li>9</li>
+	</ul>
+</div>
+<input type="button" value="上一组" id="prev9" />
+<input type="button" value="下一组" id="next9" />
+<script type="text/javascript">
+	$(function() {
+		$('#wrap9').marquee({
+			auto: false,				// 自动滚动
+			speed: 500,					// 移动速度
+			prevBtnId: 'prev9',			// 向前滚 id
+			nextBtnId: 'next9',			// 向后滚 id
+			showNum: 3,					// 显示个数
+			stepLen: 3,					// 每次滚动步长
+			afterMove: function() {
+				alert('我滚完了');
+			},	// 每次移动后回调
+			beforeMove: function() {
+				alert('我要开始滚了')
+			}	// 每次移动前回调
+		});
+	})
+</script>
+				</div>
+				<div class="code"></div>
+			</div>
+			<div class="mod_ft"></div>
+		</div>
+		<!-- E module I -->
+		
+	</div>
+	<!-- E Main -->
 	
-
-	<div class="box">
-		<div class="wrap" id="wrap3">
-			<ul>
-				<li>1</li>
-			</ul>
-		</div>
+	<!-- S Footer -->
+	<div id="mod_footer">
 		
-		<input type="button" id="prev3" value="上一页" />
-		<input type="button" id="next3" value="下一页" />
-		
-		<script type="text/javascript">
-			$(function() {
-				$('#wrap3').marquee({
-					auto: false,				// 自动滚动
-					speed: 1000,				// 移动速度
-					prevBtnId: 'prev3',			// 向前滚 id
-					nextBtnId: 'next3',			// 向后滚 id
-					showNum: 1,					// 显示个数
-					stepLen: 1,					// 每次滚动步长
-					direction: 'right',			// 移动方向
-					type: 'vertical'
-				});
-			})
-		</script>
 	</div>
-
-	<div class="box">
-		<div class="wrap" id="wrap4">
-			<ul>
-				<li>1</li>
-				<li>2</li>
-				<li>3</li>
-				<li>4</li>
-				<li>5</li>
-			</ul>
-		</div>
-		
-		<input type="button" id="prev4" value="上一页" />
-		<input type="button" id="next4" value="下一页" />
-		
-		<script type="text/javascript">
-			$(function() {
-				$('#wrap4').marquee({
-					speed: 800,					// 移动速度
-					prevBtnId: 'prev4',			// 向前滚 id
-					nextBtnId: 'next4',			// 向后滚 id
-					showNum: 5,					// 显示个数
-					stepLen: 2,					// 每次滚动步长
-					direction: 'right'			// 移动方向
-				});
-			})
-		</script>
-	</div>
+	<!-- E Footer -->
 </body>
 </html>
