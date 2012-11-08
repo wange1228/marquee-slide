@@ -269,17 +269,17 @@
 	
 	// 默认设置
 	$.fn.marquee.defaults = {
-		auto: true,					// 自动滚动
-		interval: 3000,				// 间隔时间
-		speed: 500,					// 移动速度
-		prevBtnId: '',				// 向前滚 id
-		nextBtnId: '',				// 向后滚 id
+		auto: true,					// 是否自动滚动
+		interval: 3000,				// 间隔时间（毫秒）
+		speed: 500,					// 移动速度（毫秒）
+		prevBtnId: '',				// 向前滚按钮 id
+		nextBtnId: '',				// 向后滚按钮 id
 		pauseBtnId: '',				// 暂停按钮 id
 		resumeBtnId: '',			// 继续按钮 id
 		showNum: 1,					// 显示个数
 		stepLen: 1,					// 每次滚动步长
-		direction: 'forward',		// 移动方向 forward / backward
-		type: 'horizontal',			// 水平滚动：horizontal / 垂直滚动：vertical
+		type: 'horizontal',			// 水平滚动 - horizontal / 垂直滚动 - vertical
+		direction: 'forward',		// 向前 -  forward / 向后 - backward
 		afterMove: function() {},	// 每次移动后回调
 		beforeMove: function() {}	// 每次移动前回调
 	};
