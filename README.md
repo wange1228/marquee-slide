@@ -1,6 +1,6 @@
 marquee.js - 多功能无缝滚动
 =============
-
+<pre>
 /**
  * @description 基于 jQuery 的无缝滚动插件
  * @param auto {boolean} 是否自动滚动
@@ -17,5 +17,5 @@ marquee.js - 多功能无缝滚动
  *        afterMove {function} 每次移动后回调
  *        beforeMove {function} 每次移动前回调
  * @author i@wange.im
- * @version 0.3.1
-**/
+ * @version 0.3.2
+**/</pre>
