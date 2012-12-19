@@ -14,7 +14,7 @@
  *            afterMove {function} 每次移动后回调
  *            beforeMove {function} 每次移动前回调
  * @author i@wange.im
- * @version 0.3.1
+ * @version 0.3.2
 **/
 
 (function ($) {
@@ -149,7 +149,8 @@
             (function(i) {
                 var el = _this._getBtnEl(_this.settings[i]);
                 if (el) {
-                    el.live('click', function() {
+                    el.live('click', function(ev) {
+                        ev.preventDefault();
                         eventObj[i].call(_this, st.stepLen, st.speed, st.beforeMove, st.afterMove);
                     });
                 }
