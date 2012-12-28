@@ -14,6 +14,7 @@
  *            afterMove {function} 每次移动后回调
  *            beforeMove {function} 每次移动前回调
  * @author i@wange.im
+ * @url https://github.com/wange1228/marquee-slide
  * @version 0.3.2
 **/
 
