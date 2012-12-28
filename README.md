@@ -1,4 +1,4 @@
-marquee.js - 多功能无缝滚动
+marquee.js - jQuery 多功能无缝滚动插件
 =============
 <pre>
 /**
