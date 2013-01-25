@@ -15,7 +15,7 @@
  *            beforeMove {function} 每次移动前回调
  * @author i@wange.im
  * @url https://github.com/wange1228/marquee-slide
- * @version 0.3.2
+ * @version 0.3.3
 **/
 
 ;(function ($) {
@@ -157,6 +157,16 @@
                 }
             })(i)
         }
+        
+        // mouseover 时不滚动
+        _this._getEls().wrap.hover(
+            function() {
+                _this._pause();
+            },
+            function() {
+                _this._resume();
+            }
+        );
     };
     
     // 刷新元素
@@ -252,7 +262,6 @@
                 _this._move(st.stepLen, st.speed, st.beforeMove, st.afterMove);
             }, st.interval);
         }
-        
         _this._eventBind();
     };
     
