@@ -188,7 +188,7 @@
             beforeMove.call(_this);
             var sufEls = _this._refreshEls().li.slice(-stepLen);
             
-            sufEls.clone().prependTo(_this._getEls().ul);
+            sufEls.prependTo(_this._getEls().ul);
             if (type === 'horizontal') {
                 animateObj = {left: 0};
             } else if (type === 'vertical') {
@@ -196,7 +196,6 @@
             }
             
             _this._refreshEls().ul.css(_this._getOpts().lt, -_this._getOpts().groupSize).animate(animateObj, speed, function() {
-                sufEls.remove();
                 _this._setOpts('allowMarquee', true);
                 afterMove.call(_this);
             });
@@ -213,7 +212,7 @@
             beforeMove.call(_this);
             var preEls = _this._refreshEls().li.slice(0, stepLen);
             
-            preEls.clone().appendTo(_this._getEls().ul);
+            preEls.appendTo(_this._getEls().ul);
             if (type === 'horizontal') {
                 animateObj = {left: - _this._getOpts().groupSize};
             } else if (type === 'vertical') {
@@ -221,7 +220,6 @@
             }
             _this._refreshEls().ul.animate(animateObj, speed, function() {
                 _this._getEls().ul.css(_this._getOpts().lt, 0);
-                preEls.remove();
                 _this._setOpts('allowMarquee', true);
                 afterMove.call(_this);
             });
