@@ -7,12 +7,12 @@
          showNum: 1              # 显示个数
          stepLen: 1              # 每次滚动步长
          type: 'horizontal'      # 水平滚动 - horizontal / 垂直滚动 - vertical
-         prevElement: null       # 上一页按钮元素
-         prevBefore: ->          # 上一页移动前回调
-         prevAfter: ->           # 上一页移动后回调
-         nextElement: null       # 下一页按钮元素
-         nextBefore: ->          # 下一页移动前回调
-         nextAfter: ->           # 下一页移动后回调
+         prevElement: null       # 上一组按钮元素
+         prevBefore: ->          # 上一组移动前回调
+         prevAfter: ->           # 上一组移动后回调
+         nextElement: null       # 下一组按钮元素
+         nextBefore: ->          # 下一组移动前回调
+         nextAfter: ->           # 下一组移动后回调
          pauseElement: null      # 暂停按钮元素
          pauseBefore: ->         # 暂停前回调
          pauseAfter: ->          # 暂停后回调
@@ -21,7 +21,8 @@
          resumeAfter: ->         # 继续后回调
  @author i@wange.im
  @url https://github.com/wange1228/marquee-slide
- @version 0.4.1
+ @blog http://wange.im
+ @version 0.4.2
 ###
 
 do ($ = jQuery) ->
@@ -129,6 +130,7 @@ do ($ = jQuery) ->
         # 移动
         move: ->
             _this = this
+            
             if @settings.auto
                 switch @settings.direction
                     when 'forward'
@@ -141,38 +143,48 @@ do ($ = jQuery) ->
                     setTimeout arguments.callee, interval
                     return
                 , interval
+                
+                @cache.moveBefore = @cache.moveAfter = ->
+                    null
+            else 
+                @cache.moveBefore = ->
+                    _this.cache.allowMarquee = false
+                @cache.moveAfter = ->
+                    _this.cache.allowMarquee = true
             return
             
-        # 上一页
+        # 上一组
         prev: ->
             _this = this
             if @cache.allowMarquee
-                @cache.allowMarquee = false if @settings.auto is false      # @settings.auto 无需每次执行判断，待优化
+                @cache.moveBefore.call this
                 @settings.prevBefore.call this
-                preEls = @elements.ul.children().slice 0, @settings.stepLen
-                preEls.clone().appendTo @elements.ul
-                @elements.ul.animate @cache.prevAnimateObj, @settings.speed, ->
-                    _this.elements.ul.css _this.cache.leftOrTop, 0
+                ul = @elements.ul
+                preEls = ul.children().slice 0, @settings.stepLen
+                preEls.clone().appendTo ul
+                ul.animate @cache.prevAnimateObj, @settings.speed, ->
+                    ul.css _this.cache.leftOrTop, 0
                     preEls.remove()
-                    _this.cache.allowMarquee = true if _this.settings.auto is false
+                    _this.cache.moveAfter.call _this
                     _this.settings.prevAfter.call _this
                     return
             return
             
-        # 下一页
+        # 下一组
         next: ->
             _this = this
             if @cache.allowMarquee
-                @cache.allowMarquee = false if @settings.auto is false      # @settings.auto 无需每次执行判断，待优化
+                @cache.moveBefore.call this
                 @settings.nextBefore.call this
-                sufEls = @elements.ul.children().slice -@settings.stepLen
-                sufEls.clone().prependTo @elements.ul
-                @elements.ul.css(_this.cache.leftOrTop, -@cache.stepW)
-                            .animate @cache.nextAnimateObj, @settings.speed, ->
-                                sufEls.remove()
-                                _this.cache.allowMarquee = true if _this.settings.auto is false
-                                _this.settings.nextAfter.call _this
-                                return
+                ul = @elements.ul
+                sufEls = ul.children().slice -@settings.stepLen
+                sufEls.clone().prependTo ul
+                ul.css(_this.cache.leftOrTop, -@cache.stepW)
+                  .animate @cache.nextAnimateObj, @settings.speed, ->
+                      sufEls.remove()
+                      _this.cache.moveAfter.call _this
+                      _this.settings.nextAfter.call _this
+                      return
             return
             
         # 暂停
@@ -208,13 +220,13 @@ do ($ = jQuery) ->
         stepLen: 1              # 每次滚动步长
         type: 'horizontal'      # 水平滚动 - horizontal / 垂直滚动 - vertical
         
-        prevElement: null       # 上一页按钮元素
-        prevBefore: ->          # 上一页移动前回调
-        prevAfter: ->           # 上一页移动后回调
+        prevElement: null       # 上一组按钮元素
+        prevBefore: ->          # 上一组移动前回调
+        prevAfter: ->           # 上一组移动后回调
         
-        nextElement: null       # 下一页按钮元素
-        nextBefore: ->          # 下一页移动前回调
-        nextAfter: ->           # 下一页移动后回调
+        nextElement: null       # 下一组按钮元素
+        nextBefore: ->          # 下一组移动前回调
+        nextAfter: ->           # 下一组移动后回调
         
         pauseElement: null      # 暂停按钮元素
         pauseBefore: ->         # 暂停前回调

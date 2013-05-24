@@ -10,12 +10,12 @@ marquee.js - jQuery 多功能无缝滚动插件
          showNum: 1                     # 显示个数
          stepLen: 1                     # 每次滚动步长
          type: 'horizontal'             # 水平滚动 - horizontal / 垂直滚动 - vertical
-         prevElement: null              # 上一页按钮元素
-         prevBefore: function() {}      # 上一页移动前回调
-         prevAfter: function() {}       # 上一页移动后回调
-         nextElement: null              # 下一页按钮元素
-         nextBefore: function() {}      # 下一页移动前回调
-         nextAfter: function() {}       # 下一页移动后回调
+         prevElement: null              # 上一组按钮元素
+         prevBefore: function() {}      # 上一组移动前回调
+         prevAfter: function() {}       # 上一组移动后回调
+         nextElement: null              # 下一组按钮元素
+         nextBefore: function() {}      # 下一组移动前回调
+         nextAfter: function() {}       # 下一组移动后回调
          pauseElement: null             # 暂停按钮元素
          pauseBefore: function() {}     # 暂停前回调
          pauseAfter: function() {}      # 暂停后回调
@@ -24,5 +24,5 @@ marquee.js - jQuery 多功能无缝滚动插件
          resumeAfter: function() {}     # 继续后回调
  @author i@wange.im
  @url https://github.com/wange1228/marquee-slide
- @version 0.4.1
+ @version 0.4.2
 ***/</pre>
