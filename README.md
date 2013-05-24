@@ -1,5 +1,4 @@
-marquee.js - jQuery 多功能无缝滚动插件
-=============
+# marquee.js - jQuery 多功能无缝滚动插件
 <pre>
 /***
  @description 基于 jQuery 的多功能无缝滚动插件
@@ -24,5 +23,9 @@ marquee.js - jQuery 多功能无缝滚动插件
          resumeAfter: function() {}     # 继续后回调
  @author i@wange.im
  @url https://github.com/wange1228/marquee-slide
+ @blog http://wange.im
  @version 0.4.2
 ***/</pre>
+
+## DEMO 预览
+http://wange.im/demo/marquee-slide/marquee_slide.html
