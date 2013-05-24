@@ -2,19 +2,15 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
-    <script type="text/javascript" src="jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="marquee.source.js"></script>
     <script type="text/javascript">
     $(function() {
-        if($.browser.msie) {
-            alert('拒绝 IE，从前端开始，请使用 Firefox / Chrome 等标准浏览器'); 
-        } else {
-            $('.mod').each(function() {
-                var _this = $(this),
-                    code = $.trim($('.demo', _this).html()).replace(/textarea>/, 'textarea>');
-                $('.code', _this).prepend($('<textarea>' + code + '</textarea>'));
-            });
-        }
+        $('.mod').each(function() {
+            var _this = $(this),
+                code = $.trim($('.demo', _this).html()).replace(/textarea>/, 'textarea>');
+            $('.code', _this).prepend($('<textarea>' + code + '</textarea>'));
+        });
         
         $('.mod_ft').each(function() {
             $('<div class="to_top"><a href="#mod_header" title="返回顶部">返回顶部</a></div>').appendTo($(this));
@@ -34,7 +30,6 @@
                 }
             }
         });
-
     })
     </script>
     <style type="text/css">
@@ -72,25 +67,31 @@
         <h1>marquee.js - jQuery 多功能无缝滚动插件</h1>
         <div id="desc">
             <pre>
-/**
- * @description 基于 jQuery 的无缝滚动插件
- * @param auto {boolean} 是否自动滚动
- *        interval {number} 间隔时间（毫秒）
- *        speed {number} 移动速度（毫秒）
- *        prevBtnId {string} 向前滚按钮 id
- *        nextBtnId {string} 向后滚按钮 id
- *        pauseBtnId {string} 暂停按钮 id
- *        resumeBtnId {string} 继续按钮 id
- *        showNum {number} 显示个数
- *        stepLen {number} 每次滚动步长
- *        type {string} 水平滚动 - horizontal / 垂直滚动 - vertical
- *        direction {string} 向前 -  forward / 向后 - backward
- *        afterMove {function} 每次移动后回调
- *        beforeMove {function} 每次移动前回调
- * @author i@wange.im
- * @url https://github.com/wange1228/marquee-slide
- * @version 0.3.3
-**/
+/***
+ @description 基于 jQuery 的多功能无缝滚动插件
+ @params auto: true                     # 是否自动滚动
+         interval: 3000                 # 间隔时间（毫秒）
+         direction: 'forward'           # 向前 -  forward / 向后 - backward
+         speed: 500                     # 移动速度（毫秒）
+         showNum: 1                     # 显示个数
+         stepLen: 1                     # 每次滚动步长
+         type: 'horizontal'             # 水平滚动 - horizontal / 垂直滚动 - vertical
+         prevElement: null              # 上一页按钮元素
+         prevBefore: function() {}      # 上一页移动前回调
+         prevAfter: function() {}       # 上一页移动后回调
+         nextElement: null              # 下一页按钮元素
+         nextBefore: function() {}      # 下一页移动前回调
+         nextAfter: function() {}       # 下一页移动后回调
+         pauseElement: null             # 暂停按钮元素
+         pauseBefore: function() {}     # 暂停前回调
+         pauseAfter: function() {}      # 暂停后回调
+         resumeElement: null            # 继续按钮元素
+         resumeBefore: function() {}    # 继续前回调
+         resumeAfter: function() {}     # 继续后回调
+ @author i@wange.im
+ @url https://github.com/wange1228/marquee-slide
+ @version 0.4.1
+***/
             </pre>
         </div>
     </div>
@@ -185,11 +186,11 @@
 <script type="text/javascript">
     $(function() {
         $('#wrap3').marquee({
-            auto: true,             // 自动滚动
-            interval: 3000,         // 间隔时间
-            speed: 500,             // 移动速度
-            showNum: 5,             // 显示个数
-            stepLen: 5              // 每次滚动步长
+            auto: true,
+            interval: 3000,
+            speed: 500,
+            showNum: 5,
+            stepLen: 5
         });
     })
 </script>
@@ -225,12 +226,12 @@
 <script type="text/javascript">
     $(function() {
         $('#wrap4').marquee({
-            auto: false,                // 自动滚动
-            speed: 1000,                // 移动速度
-            prevBtnId: 'prev4',         // 向前滚 id
-            nextBtnId: 'next4',         // 向后滚 id
-            showNum: 4,                 // 显示个数
-            stepLen: 4                  // 每次滚动步长
+            auto: false,
+            speed: 1000,
+            showNum: 4,
+            stepLen: 4,
+            prevElement: $('#prev4'),
+            nextElement: $('#next4')
         });
     })
 </script>
@@ -266,12 +267,12 @@
 <script type="text/javascript">
     $(function() {
         $('#wrap5').marquee({
-            auto: true,                 // 自动滚动
-            interval: 1000,             // 间隔时间
-            pauseBtnId: 'pause5',       // 暂停按钮 id
-            resumeBtnId: 'resume5',     // 继续按钮 id
-            showNum: 4,                 // 显示个数
-            stepLen: 4                  // 每次滚动步长
+            auto: true,
+            interval: 1000,
+            showNum: 4,
+            stepLen: 4,
+            pauseElement: $('#pause5'),
+            resumeElement: $('#resume5')
         });
     })
 </script>
@@ -305,12 +306,12 @@
 <script type="text/javascript">
     $(function() {
         $('#wrap6').marquee({
-            auto: true,                 // 自动滚动
-            interval: 2000,             // 间隔时间
-            speed: 800,                 // 移动速度
-            showNum: 6,                 // 显示个数
-            stepLen: 6,                 // 每次滚动步长
-            direction: 'backward'       // 移动方向
+            auto: true,
+            interval: 2000,
+            speed: 800,
+            showNum: 6,
+            stepLen: 6,
+            direction: 'backward'
         });
     })
 </script>
@@ -344,11 +345,11 @@
 <script type="text/javascript">
     $(function() {
         $('#wrap7').marquee({
-            auto: true,                 // 自动滚动
-            interval: 2000,             // 间隔时间
-            showNum: 3,                 // 显示个数
-            stepLen: 3,                 // 每次滚动步长
-            type: 'vertical'            // 水平滚动：horizontal / 垂直滚动：vertical
+            auto: true,
+            interval: 2000,
+            showNum: 3,
+            stepLen: 3,
+            type: 'vertical'
         });
     })
 </script>
@@ -384,12 +385,12 @@
 <script type="text/javascript">
     $(function() {
         $('#wrap8').marquee({
-            auto: false,                // 自动滚动
-            prevBtnId: 'prev8',         // 向前滚 id
-            nextBtnId: 'next8',         // 向后滚 id
-            showNum: 4,                 // 显示个数
-            stepLen: 3,                 // 每次滚动步长
-            type: 'vertical'            // 水平滚动：horizontal / 垂直滚动：vertical
+            auto: false,
+            prevElement: $('#prev8'),
+            nextElement: $('#next8'),
+            showNum: 4,
+            stepLen: 3,
+            type: 'vertical'
         });
     })
 </script>
@@ -425,18 +426,24 @@
 <script type="text/javascript">
     $(function() {
         $('#wrap9').marquee({
-            auto: false,                // 自动滚动
-            speed: 500,                 // 移动速度
-            prevBtnId: 'prev9',         // 向前滚 id
-            nextBtnId: 'next9',         // 向后滚 id
-            showNum: 3,                 // 显示个数
-            stepLen: 3,                 // 每次滚动步长
-            afterMove: function() {
-                alert('我滚完了');
-            },  // 每次移动后回调
-            beforeMove: function() {
-                alert('我要开始滚了');
-            }   // 每次移动前回调
+            auto: false,
+            speed: 500,
+            showNum: 3,
+            stepLen: 3,
+            prevElement: $('#prev9'),
+            nextElement: $('#next9'),
+            prevBefore: function() {
+                alert('prev before callback~')
+            },
+            prevAfter: function() {
+                alert('prev after callback~')
+            },
+            nextBefore: function() {
+                alert('next before callback~')
+            },
+            nextAfter: function() {
+                alert('next after callback~')
+            }
         });
     })
 </script>
