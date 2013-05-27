@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
     var pkg = grunt.file.readJSON('package.json'),
-        readMe = '# ' + pkg.name + ' - ' + pkg.description                                                  + '\n' +
+        readMe = '# ' + pkg.name                                                                            + '\n' +
+                 '## ' + pkg.description                                                                    + '\n' +
                  '<pre>'                                                                                    + '\n' +
                  '/***'                                                                                     + '\n' +
                  ' @params auto: true                     # 是否自动滚动'                                   + '\n' +

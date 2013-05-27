@@ -1,4 +1,5 @@
-# Marquee-Slide - 基于 jQuery 的多功能无缝滚动插件
+# Marquee-Slide
+## 基于 jQuery 的多功能无缝滚动插件
 <pre>
 /***
  @params auto: true                     # 是否自动滚动
@@ -20,10 +21,10 @@
          resumeElement: null            # 继续按钮元素
          resumeBefore: function() {}    # 继续前回调
          resumeAfter: function() {}     # 继续后回调
- @url http://wange.im/demo/marquee-slide/marquee_slide.html
+ @url https://github.com/wange1228/marquee-slide
  @version 0.4.3
  @author 万戈
  @blog http://wange.im
 ***/</pre>
 ## DEMO 预览
-http://wange.im/demo/marquee-slide/marquee_slide.html
+https://github.com/wange1228/marquee-slide

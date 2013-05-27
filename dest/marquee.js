@@ -1,7 +1,7 @@
 /***
    @name Marquee-Slide
    @description 基于 jQuery 的多功能无缝滚动插件
-   @url http://wange.im/demo/marquee-slide/marquee_slide.html
+   @url https://github.com/wange1228/marquee-slide
    @version 0.4.3
    @author 万戈
    @blog http://wange.im
