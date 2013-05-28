@@ -1,4 +1,4 @@
-# Marquee-Slide
+# Marquee-Slide 基于 jQuery 的多功能无缝滚动插件
 
 ## 简介
 Marquee-Slide 是一款基于 jQuery 的多功能无缝滚动插件，它可以配置的主要功能有：
