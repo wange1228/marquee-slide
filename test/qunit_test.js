@@ -1,3 +1,3 @@
-test('Marquee Exists', function() {
-    ok(typeof $.fn.marquee === 'function', 'Marquee function is exist.')
+test('Marquee Exist', function() {
+    ok($.isFunction( $.fn.marquee ), 'Marquee function is exist.');
 });
